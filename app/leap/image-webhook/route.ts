@@ -22,13 +22,13 @@ if (!leapWebhookSecret) {
 export async function POST(request: Request) {
   const incomingData = await request.json();
   const urlObj = new URL(request.url);
-  const user_id = urlObj.searchParams.get('user_id');
-  const model_id = urlObj.searchParams.get('model_id');
-  const webhook_secret = urlObj.searchParams.get('webhook_secret');
-  const model_db_id = urlObj.searchParams.get('model_db_id');
+  const userId = urlObj.searchParams.get('user_id');
+  const modelId = urlObj.searchParams.get('model_id');
+  const webhookSecret = urlObj.searchParams.get('webhook_secret');
+  const modelDbId = urlObj.searchParams.get('model_db_id');
   const result = incomingData?.result;
 
-  console.log({ user_id, model_id, webhook_secret });
+  console.log({ userId, modelId, webhookSecret });
 
   if (!leapApiKey) {
     return NextResponse.json(
@@ -43,53 +43,45 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!webhook_secret) {
+  if (!webhookSecret) {
     return NextResponse.json(
       {},
       { status: 500, statusText: 'Malformed URL, no webhook_secret detected!' }
     );
   }
 
-  if (webhook_secret.toLowerCase() !== leapWebhookSecret?.toLowerCase()) {
+  if (webhookSecret.toLowerCase() !== leapWebhookSecret?.toLowerCase()) {
     return NextResponse.json({}, { status: 401, statusText: 'Unauthorized!' });
   }
 
-  if (!user_id) {
+  if (!userId) {
     return NextResponse.json(
       {},
       { status: 500, statusText: 'Malformed URL, no user_id detected!' }
     );
   }
 
-  if (!model_id) {
+  if (!modelId) {
     return NextResponse.json(
       {},
       { status: 500, statusText: 'Malformed URL, no model_id detected!' }
     );
   }
 
-  if (!model_db_id) {
+  if (!modelDbId) {
     return NextResponse.json(
       {},
       { status: 500, statusText: 'Malformed URL, no model_db_id detected!' }
     );
   }
 
-  const supabase = createClient<Database>(
-    supabaseUrl as string,
-    supabaseServiceRoleKey as string,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-        detectSessionInUrl: false,
-      },
-    }
-  );
+
+
+
   const {
     data: { user },
     error,
-  } = await supabase.auth.admin.getUserById(user_id);
+  } = await supabase.auth.admin.getUserById(userId);
 
   if (error) {
     return NextResponse.json({}, { status: 401, statusText: error.message });
@@ -108,7 +100,7 @@ export async function POST(request: Request) {
     await Promise.all(
       images.map(async (image: any) => {
         const { error: imageError } = await supabase.from('images').insert({
-          modelId: Number(model_db_id),
+          modelId: Number(modelDbId),
           uri: image.uri,
         });
         if (imageError) {
