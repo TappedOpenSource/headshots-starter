@@ -1,6 +1,6 @@
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { FaFemale, FaMale, FaRainbow } from "react-icons/fa";
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { FaFemale, FaMale, FaRainbow } from 'react-icons/fa';
 
 export function ModelTypeSelector() {
   return (

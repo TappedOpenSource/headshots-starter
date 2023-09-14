@@ -1,24 +1,18 @@
-import { AvatarIcon } from "@radix-ui/react-icons";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { AvatarIcon } from '@radix-ui/react-icons';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import Link from "next/link";
-import { Button } from "./ui/button";
-import React from "react";
+} from './ui/dropdown-menu';
+import Link from 'next/link';
+import { Button } from './ui/button';
+import React from 'react';
+import { getCurrentUser } from '@/lib/auth';
 
-export default async function Navbar() {
-  const supabase = createServerComponentClient({ cookies });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function Navbar() {
+  const user = getCurrentUser();
 
   return (
     <div className="flex w-full px-8 py-4 justify-between items-center border-b">
@@ -30,7 +24,7 @@ export default async function Navbar() {
       <div className="flex gap-4 items-center">
         {!user && (
           <Link href="/login">
-            <Button variant={"ghost"}>Login / Signup</Button>
+            <Button variant={'ghost'}>Login / Signup</Button>
           </Link>
         )}
         {user && (
@@ -45,7 +39,7 @@ export default async function Navbar() {
                 <Button
                   type="submit"
                   className="w-full text-left"
-                  variant={"ghost"}
+                  variant={'ghost'}
                 >
                   Log out
                 </Button>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Table,
@@ -7,22 +7,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
-import { Database } from "@/types/supabase";
-import { Icons } from "./icons";
-import { useRouter } from "next/navigation";
-import { modelRowWithSamples } from "@/types/utils";
+import { Icons } from './icons';
+import { useRouter } from 'next/navigation';
+import { AiModel } from '@/types/aiModel';
 
 type ModelsTableProps = {
-  models: modelRowWithSamples[];
+  models: AiModel[];
 };
 
-export default async function ModelsTable({ models }: ModelsTableProps) {
+export default function ModelsTable({ models }: ModelsTableProps) {
   const router = useRouter();
-  const handleRedirect = (id: number) => {
+  const handleRedirect = (id: string) => {
     router.push(`/overview/models/${id}`);
   };
 
@@ -40,28 +38,28 @@ export default async function ModelsTable({ models }: ModelsTableProps) {
         <TableBody>
           {models?.map((model) => (
             <TableRow
-              key={model.modelId}
+              key={model.id}
               onClick={() => handleRedirect(model.id)}
               className="cursor-pointer h-16"
             >
-              <TableCell className="font-medium">{model.name}</TableCell>
+              <TableCell className="font-medium">{model.id}</TableCell>
               <TableCell>
                 <div>
                   <Badge
                     className="flex gap-2 items-center w-min"
                     variant={
-                      model.status === "finished" ? "default" : "secondary"
+                      model.status === 'ready' ? 'default' : 'secondary'
                     }
                   >
                     {model.status}
-                    {model.status === "processing" && (
+                    {model.status === 'training' && (
                       <Icons.spinner className="h-4 w-4 animate-spin" />
                     )}
                   </Badge>
                 </div>
               </TableCell>
               <TableCell>{model.type}</TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <div className="flex gap-2 flex-shrink-0 items-center">
                   {model.samples.slice(0, 3).map((sample) => (
                     <Avatar key={sample.id}>
@@ -69,12 +67,12 @@ export default async function ModelsTable({ models }: ModelsTableProps) {
                     </Avatar>
                   ))}
                   {model.samples.length > 3 && (
-                    <Badge className="rounded-full h-10" variant={"outline"}>
+                    <Badge className="rounded-full h-10" variant={'outline'}>
                       +{model.samples.length - 3}
                     </Badge>
                   )}
                 </div>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>

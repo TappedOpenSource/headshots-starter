@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-export default function SupabaseLogo() {
+export default function FirebaseLogo() {
   return (
     <svg
-      aria-label="Supabase logo"
+      aria-label="Firebase logo"
       width="140"
       height="30"
       viewBox="0 0 115 23"
@@ -100,5 +100,5 @@ export default function SupabaseLogo() {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }

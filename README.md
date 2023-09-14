@@ -13,7 +13,7 @@ The app is powered by:
 - 🚀 [Leap AI](https://tryleap.ai/) for AI model training
 - 🚀 [Leap AI](https://tryleap.ai/) to generate headshots
 - ▲ [Next.js](https://nextjs.org/) for app and landing page
-- 🔋 [Supabase](https://supabase.com/) for DB & Auth
+- 🔋 [Firebase](https://firebase.com/) for DB & Auth
 - 📩 [Resend](https://resend.com/) to email user when headshots are ready
 - ⭐️ [Shadcn](https://ui.shadcn.com/) with [Tailwind CSS](https://tailwindcss.com/) for styles
 - 🔥 [Replit](https://replit.com/@leap-ai/Headshot-AI-Professional-Headshots-with-Leap-AI) for 1-click app run in the browser
@@ -52,9 +52,9 @@ cd headshots-starter
    yarn
    ```
 
-4. Create a [new Supabase project](https://database.new) and create the tables required for the app:
+4. Create a [new Firebase project](https://database.new) and create the tables required for the app:
 
-   - Rename `.env.local.example` to `.env.local` and update the values for `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+   - Rename `.env.local.example` to `.env.local` and update the values for `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from [your Firebase project's API settings](https://app.supabase.com/project/_/settings/api)
 
    **For this starter repo we disabled Row level permissions, you can enable them as needed for your own security, in the supasbase table settings**
 
@@ -62,7 +62,7 @@ cd headshots-starter
 
    This code block defines the schema for three tables: `images`, `models`, and `samples`.
 
-   For any table column with `foreign_key`, make sure to link it while creating the column in Supabase.
+   For any table column with `foreign_key`, make sure to link it while creating the column in Firebase.
 
    [images]
 

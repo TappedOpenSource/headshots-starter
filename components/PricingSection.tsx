@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
+import Link from 'next/link';
+import { Button } from './ui/button';
 
 export default function PricingSection() {
   return (
@@ -32,7 +32,7 @@ export default function PricingSection() {
             </div>
             <div className="mt-10 text-center">
               <Link href="/login">
-                {" "}
+                {' '}
                 <Button className="w-3/4">{option.buttonText}</Button>
               </Link>
             </div>
@@ -45,41 +45,41 @@ export default function PricingSection() {
 
 const pricingOptions = [
   {
-    title: "Starter",
-    price: "$9.99/month",
+    title: 'Starter',
+    price: '$9.99/month',
     description:
-      "Perfect for individuals looking to enhance their online presence.",
+      'Perfect for individuals looking to enhance their online presence.',
     features: [
-      "5 AI Headshots",
-      "Standard Resolution Downloads",
-      "Personal Use License",
+      '5 AI Headshots',
+      'Standard Resolution Downloads',
+      'Personal Use License',
     ],
-    buttonText: "Choose Starter",
-    bgColor: "bg-white",
+    buttonText: 'Choose Starter',
+    bgColor: 'bg-white',
   },
   {
-    title: "Basic",
-    price: "$19.99/month",
+    title: 'Basic',
+    price: '$19.99/month',
     description:
-      "Ideal for professionals requiring frequent updates to their profiles.",
+      'Ideal for professionals requiring frequent updates to their profiles.',
     features: [
-      "15 AI Headshots",
-      "High-Resolution Downloads",
-      "Commercial Use License",
+      '15 AI Headshots',
+      'High-Resolution Downloads',
+      'Commercial Use License',
     ],
-    buttonText: "Choose Basic",
-    bgColor: "bg-blue-50",
+    buttonText: 'Choose Basic',
+    bgColor: 'bg-blue-50',
   },
   {
-    title: "Premium",
-    price: "$29.99/month",
-    description: "The best value with unlimited possibilities.",
+    title: 'Premium',
+    price: '$29.99/month',
+    description: 'The best value with unlimited possibilities.',
     features: [
-      "150 AI Headshots",
-      "Ultra High-Resolution Downloads",
-      "Extended Commercial Use License",
+      '150 AI Headshots',
+      'Ultra High-Resolution Downloads',
+      'Extended Commercial Use License',
     ],
-    buttonText: "Choose Premium",
-    bgColor: "bg-white",
+    buttonText: 'Choose Premium',
+    bgColor: 'bg-white',
   },
 ];

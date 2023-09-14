@@ -1,70 +1,68 @@
-"use client";
+'use client';
 
-import { Icons } from "@/components/icons";
-import { Database } from "@/types/supabase";
-import { imageRow, modelRow } from "@/types/utils";
-import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { AspectRatio } from "../ui/aspect-ratio";
-import { Badge } from "../ui/badge";
+import { Icons } from '@/components/icons';
+import { useEffect, useState } from 'react';
+import { AspectRatio } from '../ui/aspect-ratio';
+import { Badge } from '../ui/badge';
+import { AiModel } from '@/types/aiModel';
+import { getAiModelsByUserIdRealtime } from '@/lib/database';
+import { getCurrentUser } from '@/lib/auth';
 
 type ClientSideModelProps = {
-  serverModel: modelRow;
-  serverImages: imageRow[];
+  serverModel: AiModel;
+  serverImages: Image[];
 };
 
 export default function ClientSideModel({
   serverModel,
   serverImages,
 }: ClientSideModelProps) {
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-  );
-  const [model, setModel] = useState<modelRow>(serverModel);
+  const user = getCurrentUser();
+  if (!user) {
+    return (
+      <></>
+    );
+  }
 
+  const [model, setModel] = useState<AiModel>(serverModel);
   useEffect(() => {
-    const channel = supabase
-      .channel("realtime-model")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "models" },
-        (payload: any) => {
-          setModel(payload.new as modelRow);
-        }
-      )
-      .subscribe();
+    const unsubscribe = getAiModelsByUserIdRealtime(user.uid, (models) => {
+      const model = models[0];
+      if (model) {
+        setModel(model);
+      }
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      unsubscribe();
     };
-  }, [supabase, model, setModel]);
+  }, [model, setModel]);
 
   return (
     <div id="train-model-container" className="w-full h-full">
       <div className="flex flex-col w-full mt-4 gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl">{model.name}</h1>
+          <h1 className="text-3xl">{model.id}</h1>
           <div>
             <Badge
-              variant={model.status === "finished" ? "default" : "secondary"}
+              variant={model.status === 'ready' ? 'default' : 'secondary'}
             >
               {model.status}
-              {model.status === "processing" && (
+              {model.status === 'training' && (
                 <Icons.spinner className="h-4 w-4 animate-spin ml-2 inline-block" />
               )}
             </Badge>
           </div>
         </div>
         <div className="flex flex-1 flex-col w-full gap-8">
-          {model.status === "finished" && (
+          {model.status === 'ready' && (
             <div className="flex flex-1 flex-col gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {serverImages?.map((image) => (
                   <div key={image.id}>
                     <AspectRatio ratio={1}>
                       <img
-                        src={image.uri}
+                        src={image.url}
                         className="rounded-md w-96 object-cover"
                       />
                     </AspectRatio>

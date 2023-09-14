@@ -1,6 +1,4 @@
-import { Database } from "@/types/supabase";
 import { Leap } from "@leap-ai/sdk";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 

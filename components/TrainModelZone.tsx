@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -9,26 +9,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useForm } from "react-hook-form";
-import { FaFemale, FaImages, FaMale, FaRainbow } from "react-icons/fa";
-import * as z from "zod";
-import { Icons } from "./icons";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useToast } from '@/components/ui/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useForm } from 'react-hook-form';
+import { FaFemale, FaImages, FaMale, FaRainbow } from 'react-icons/fa';
+import * as z from 'zod';
+import { Icons } from './icons';
 
 const formSchema = z.object({
   name: z
     .string()
     .min(1)
     .max(50)
-    .regex(/^[a-zA-Z ]+$/, "Only letters and spaces are allowed"),
+    .regex(/^[a-zA-Z ]+$/, 'Only letters and spaces are allowed'),
   type: z.string().min(1).max(50),
 });
 
@@ -41,8 +41,8 @@ export default function TrainModelZone() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      type: "man",
+      name: '',
+      type: 'man',
     },
   });
 
@@ -67,9 +67,9 @@ export default function TrainModelZone() {
       // if user tries to upload more than 10 files, display a toast
       if (newFiles.length + files.length > 10) {
         toast({
-          title: "Too many images",
+          title: 'Too many images',
           description:
-            "You can only upload up to 10 images in total. Please try again.",
+            'You can only upload up to 10 images in total. Please try again.',
           duration: 5000,
         });
         return;
@@ -78,9 +78,9 @@ export default function TrainModelZone() {
       // display a toast if any duplicate files were found
       if (newFiles.length !== acceptedFiles.length) {
         toast({
-          title: "Duplicate file names",
+          title: 'Duplicate file names',
           description:
-            "Some of the files you selected were already added. They were ignored.",
+            'Some of the files you selected were already added. They were ignored.',
           duration: 5000,
         });
       }
@@ -91,9 +91,9 @@ export default function TrainModelZone() {
 
       if (totalSize + newSize > 4.5 * 1024 * 1024) {
         toast({
-          title: "Images exceed size limit",
+          title: 'Images exceed size limit',
           description:
-            "The total combined size of the images cannot exceed 4.5MB.",
+            'The total combined size of the images cannot exceed 4.5MB.',
           duration: 5000,
         });
         return;
@@ -102,8 +102,8 @@ export default function TrainModelZone() {
       setFiles([...files, ...newFiles]);
 
       toast({
-        title: "Images selected",
-        description: "The images were successfully selected.",
+        title: 'Images selected',
+        description: 'The images were successfully selected.',
         duration: 5000,
       });
     },
@@ -121,12 +121,12 @@ export default function TrainModelZone() {
     setIsLoading(true);
     const formData = new FormData();
     files?.forEach((file) => {
-      formData.append("image", file); // Add the image Blob to the form data
+      formData.append('image', file); // Add the image Blob to the form data
     });
-    formData.append("name", form.getValues("name").trim());
-    formData.append("type", form.getValues("type"));
-    const response = await fetch("/leap/train-model", {
-      method: "POST",
+    formData.append('name', form.getValues('name').trim());
+    formData.append('type', form.getValues('type'));
+    const response = await fetch('/leap/train-model', {
+      method: 'POST',
       body: formData,
     });
 
@@ -134,9 +134,9 @@ export default function TrainModelZone() {
 
     if (!response.ok) {
       const responseData = await response.json();
-      console.log("Something went wrong! ", responseData.message);
+      console.log('Something went wrong! ', responseData.message);
       toast({
-        title: "Something went wrong!",
+        title: 'Something went wrong!',
         description: responseData.message,
         duration: 5000,
       });
@@ -144,24 +144,24 @@ export default function TrainModelZone() {
     }
 
     toast({
-      title: "Model queued for training",
+      title: 'Model queued for training',
       description:
-        "The model was queued for training. You will receive an email when the model is ready to use.",
+        'The model was queued for training. You will receive an email when the model is ready to use.',
       duration: 5000,
     });
 
-    router.push("/");
+    router.push('/');
   }, [files]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/png": [".png"],
-      "image/jpeg": [".jpg", ".jpeg"],
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
     },
   });
 
-  const modelType = form.watch("type");
+  const modelType = form.watch('type');
 
   return (
     <div>
@@ -202,7 +202,7 @@ export default function TrainModelZone() {
               value={modelType}
               onValueChange={(value) => {
                 console.log(value);
-                form.setValue("type", value);
+                form.setValue('type', value);
               }}
             >
               <div>
@@ -286,7 +286,7 @@ export default function TrainModelZone() {
                   />
                   <Button
                     variant="outline"
-                    size={"sm"}
+                    size={'sm'}
                     className="w-full"
                     onClick={() => removeFile(file)}
                   >

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -6,34 +6,34 @@ export default function Footer() {
       <div className="text-gray-500">
         <Link
           className="text-blue-600 hover:underline font-bold"
-          href="https://github.com/leap-ai/headshots-starter"
+          href="https://github.com/TappedOpenSource/headshots-starter"
           target="_blank"
         >
           Open-source
-        </Link>{" "}
-        powered by{" "}
+        </Link>{' '}
+        powered by{' '}
         <Link
           className="text-blue-600 hover:underline font-bold"
           href="https://tryleap.ai/"
           target="_blank"
         >
-          Leap AI,{" "}
+          Leap AI,{' '}
         </Link>
         <Link
           className="text-blue-600 hover:underline font-bold"
-          href="https://supabase.com/"
+          href="https://firebase.com/"
           target="_blank"
         >
-          Supabase,{" "}
+          Firebase,{' '}
         </Link>
         <Link
           className="text-blue-600 hover:underline font-bold"
           href="https://replit.com/@leap-ai/Headshot-AI-Professional-Headshots-with-Leap-AI"
           target="_blank"
         >
-          Replit{" "}
+          Replit{' '}
         </Link>
-        and{" "}
+        and{' '}
         <Link
           className="text-blue-600 hover:underline font-bold"
           href="https://vercel.com/"
@@ -44,7 +44,7 @@ export default function Footer() {
       </div>
       <div className="flex space-x-4 pb-4 sm:pb-0">
         <Link
-          href="https://twitter.com/leap_api"
+          href="https://twitter.com/tappedai"
           className="group"
           aria-label="Twitter"
           target="_blank"
@@ -57,7 +57,7 @@ export default function Footer() {
           </svg>
         </Link>
         <Link
-          href="https://github.com/leap-ai/headshots-starter"
+          href="https://github.com/TappedOpenSource/headshots-starter"
           className="group"
           aria-label="GitHub"
           target="_blank"

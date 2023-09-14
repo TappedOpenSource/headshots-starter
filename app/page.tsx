@@ -1,24 +1,20 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+'use client';
 
-import hero from "/public/hero.png";
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { Button } from "@/components/ui/button";
-import ExplainerSection from "@/components/ExplainerSection";
-import PricingSection from "@/components/PricingSection";
-import Footer from "@/components/Footer";
+import hero from '/public/hero.png';
 
-export default async function Index() {
-  const supabase = createServerComponentClient({ cookies });
+import { Button } from '@/components/ui/button';
+import ExplainerSection from '@/components/ExplainerSection';
+import PricingSection from '@/components/PricingSection';
+import { getCurrentUser } from '@/lib/auth';
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function Index() {
+  const user = getCurrentUser();
 
   if (user) {
-    return redirect("/overview");
+    return redirect('/overview');
   }
 
   return (

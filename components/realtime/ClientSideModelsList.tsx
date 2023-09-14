@@ -1,57 +1,38 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Database } from "@/types/supabase";
-import { modelRowWithSamples } from "@/types/utils";
-import { createClient } from "@supabase/supabase-js";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { FaImages } from "react-icons/fa";
-import ModelsTable from "../ModelsTable";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { FaImages } from 'react-icons/fa';
+import ModelsTable from '../ModelsTable';
+import { AiModel } from '@/types/aiModel';
+import { getCurrentUser } from '@/lib/auth';
+import { getAiModelsByUserIdRealtime } from '@/lib/database';
 
 type ClientSideModelsListProps = {
-  serverModels: modelRowWithSamples[] | [];
+  serverModels: AiModel[] | [];
 };
 
 export default function ClientSideModelsList({
   serverModels,
 }: ClientSideModelsListProps) {
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-  );
-  const [models, setModels] = useState<modelRowWithSamples[]>(serverModels);
+  const user = getCurrentUser();
+  if (!user) {
+    return (
+      <></>
+    );
+  }
 
+  const [models, setModels] = useState<AiModel[]>(serverModels);
   useEffect(() => {
-    const channel = supabase
-      .channel("realtime-models")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "models" },
-        async (payload: any) => {
-          const samples = await supabase
-            .from("samples")
-            .select("*")
-            .eq("modelId", payload.new.id);
-
-          const newModel: modelRowWithSamples = {
-            ...payload.new,
-            samples: samples.data,
-          };
-
-          const dedupedModels = models.filter(
-            (model) => model.id !== payload.old?.id
-          );
-
-          setModels([...dedupedModels, newModel]);
-        }
-      )
-      .subscribe();
+    const unsubscribe = getAiModelsByUserIdRealtime(user.uid, (models) => {
+      setModels(models);
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      unsubscribe();
     };
-  }, [supabase, models, setModels]);
+  }, [models, setModels]);
 
   return (
     <div id="train-model-container" className="w-full p-8">
@@ -60,7 +41,7 @@ export default function ClientSideModelsList({
           <div className="flex flex-row gap-4 w-full justify-between items-center text-center">
             <h1>Your models</h1>
             <Link href="/overview/models/train">
-              <Button className="ml-4" size={"sm"}>
+              <Button className="ml-4" size={'sm'}>
                 Train model
               </Button>
             </Link>
@@ -76,7 +57,7 @@ export default function ClientSideModelsList({
           </h1>
           <div>
             <Link href="/overview/models/train">
-              <Button size={"lg"}>Train model</Button>
+              <Button size={'lg'}>Train model</Button>
             </Link>
           </div>
         </div>

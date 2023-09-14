@@ -1,19 +1,16 @@
-import Login from "../login/page";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+'use client';
 
-export const dynamic = "force-dynamic";
+import { getCurrentUser } from '@/lib/auth';
+import Login from '../login/page';
 
-export default async function RootLayout({
+export const dynamic = 'force-dynamic';
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient({ cookies });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = getCurrentUser();
 
   if (!user) {
     return <Login />;
