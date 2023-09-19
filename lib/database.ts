@@ -1,7 +1,8 @@
 
-import { collection, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from './firebase';
+import { addDoc, collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { AiModel } from '@/types/aiModel';
+import { Image } from '@/types/image';
 
 export async function getAiModelByUserId(userId: string, id: string): Promise<AiModel | null> {
     const queryRef = collection(db, `aiModels/${userId}/imageModels`);
@@ -38,4 +39,18 @@ export function getAiModelsByUserIdRealtime(userId: string, callback: (aiModels:
     });
 
     return unsubscribe;
+}
+
+export async function createSampleImage({ userId, images }: {
+    userId: string,
+    images: string[],
+}): Promise<void> {
+    await Promise.all(
+        images.map(async (image: string) => {
+            const samplesCollection = collection(db, `samples/${userId}/userSamples`);
+            await addDoc(samplesCollection, {
+                url: image,
+            });
+        })
+    );
 }

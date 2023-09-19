@@ -1,5 +1,5 @@
 
-type Image = {
+export type Image = {
     id: string;
     url: string;
 }

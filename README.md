@@ -1,6 +1,6 @@
 # 👨‍💼 [Headshot AI](https://headshots-starter.vercel.app/) - Professional Headshots with AI
 
-Introducing Headshot AI, an open-source project from [Leap AI](https://tryleap.ai/) that generates Professional AI Headshots in minutes.
+Introducing Headshot AI, an open-source project from [Tapped AI](https://tapped.ai/) that generates Professional AI Headshots in minutes.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/TappedOpenSource/headshots-starter.git)
 
@@ -20,7 +20,7 @@ The app is powered by:
 
 Just add Stripe and you have a Headshot AI SaaS in a box.
 
-[![Headshot AI Explainer](/public/explainer.png)](https://tryleap.ai/)
+[![Headshot AI Explainer](/public/explainer.png)](https://tapped.ai/)
 
 ## Running Locally
 

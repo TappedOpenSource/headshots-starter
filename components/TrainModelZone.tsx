@@ -21,7 +21,7 @@ import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { FaFemale, FaImages, FaMale, FaRainbow } from 'react-icons/fa';
 import * as z from 'zod';
-import { Icons } from './icons';
+import * as api from '@/lib/api';
 
 const formSchema = z.object({
   name: z
@@ -125,30 +125,28 @@ export default function TrainModelZone() {
     });
     formData.append('name', form.getValues('name').trim());
     formData.append('type', form.getValues('type'));
-    const response = await fetch('/leap/train-model', {
-      method: 'POST',
-      body: formData,
-    });
 
-    setIsLoading(false);
+    try {
+      await api.trainModel({
+        referenceImages: [],
+        name: '',
+        type: '',
+      });
+      setIsLoading(false);
 
-    if (!response.ok) {
-      const responseData = await response.json();
-      console.log('Something went wrong! ', responseData.message);
       toast({
-        title: 'Something went wrong!',
-        description: responseData.message,
+        title: 'Model queued for training',
+        description:
+        'The model was queued for training. You will receive an email when the model is ready to use.',
         duration: 5000,
       });
-      return;
+    } catch (e) {
+      console.log('Something went wrong!');
+      toast({
+        title: 'Something went wrong!',
+        duration: 5000,
+      });
     }
-
-    toast({
-      title: 'Model queued for training',
-      description:
-        'The model was queued for training. You will receive an email when the model is ready to use.',
-      duration: 5000,
-    });
 
     router.push('/');
   }, [files]);
