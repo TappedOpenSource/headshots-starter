@@ -18,10 +18,9 @@ const app = getApps().length <= 0 ?
 
 const db = getFirestore(app);
 const auth = getAuth(app);
-const projectId = app.options.projectId;
 
-const webhookUrl = `https://us-central1-${projectId}.cloudfunctions.net/train-webhook`;
-const leapImageWebhookUrl = `https://us-central1-${projectId}.cloudfunctions.net/image-webhook`;
+const webhookUrl = 'https://trainwebhook-hwojyebtha-uc.a.run.app';
+const leapImageWebhookUrl = 'https://imagewebhook-hwojyebtha-uc.a.run.app';
 
 const aiModelsRef = db.collection('aiModels');
 const avatarsRef = db.collection('avatars');
@@ -243,7 +242,7 @@ export const trainWebhook = onRequest(
           const { status, statusText } = await leap.images.generate({
             prompt: prompts[index].replace(
               '{model_type}',
-              (modelType as string) ?? ''
+              modelType ?? ''
             ),
             numberOfImages: 4,
             height: 512,
