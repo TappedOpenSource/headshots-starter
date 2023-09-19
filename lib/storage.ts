@@ -9,14 +9,11 @@ export async function uploadSampleImages({ userId, images }: {
 }): Promise<string[]> {
    const downloadUrls = await Promise.all(
         images.map(async (image: File) => {
-            const uuid = uuidv4();
             const fileRef = ref(
                 storage, 
-                `samples/${userId}/${uuid}.png`,
+                `samples/${userId}/${image.name}`,
             );
-            await uploadBytes(fileRef, image, {
-                contentType: 'image/png',
-            });
+            await uploadBytes(fileRef, image);
             const downloadUrl = await getDownloadURL(fileRef);
 
             return downloadUrl;

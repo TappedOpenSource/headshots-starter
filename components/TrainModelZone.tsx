@@ -22,6 +22,9 @@ import { useForm } from 'react-hook-form';
 import { FaFemale, FaImages, FaMale, FaRainbow } from 'react-icons/fa';
 import * as z from 'zod';
 import * as api from '@/lib/api';
+import { uploadSampleImages } from '@/lib/storage';
+import { createSampleImage } from '@/lib/database';
+import { getCurrentUser } from '@/lib/auth';
 
 const formSchema = z.object({
   name: z
@@ -119,18 +122,26 @@ export default function TrainModelZone() {
 
   const trainModel = useCallback(async () => {
     setIsLoading(true);
-    const formData = new FormData();
-    files?.forEach((file) => {
-      formData.append('image', file); // Add the image Blob to the form data
-    });
-    formData.append('name', form.getValues('name').trim());
-    formData.append('type', form.getValues('type'));
-
     try {
+      const user = getCurrentUser();
+      if (user === null) throw new Error('User not found');
+
+      // upload to storage
+      const urls = await uploadSampleImages({
+        userId: user.uid,
+        images: files,
+      });
+
+      // upload to database
+      await createSampleImage({
+        userId: user.uid,
+        images: urls,
+      });
+
       await api.trainModel({
-        referenceImages: [],
-        name: '',
-        type: '',
+        sampleImages: urls,
+        name: form.getValues('name').trim(),
+        type: form.getValues('type').trim(),
       });
       setIsLoading(false);
 
