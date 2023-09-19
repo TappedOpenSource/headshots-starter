@@ -118,6 +118,7 @@ export const trainModel = onCall(
     });
 
     const userId = request.auth.uid;
+    logger.info({ userId });
     const { imageUrls, type, name }: {
       imageUrls: string[];
       type: string;
@@ -130,6 +131,7 @@ export const trainModel = onCall(
         'Upload at least 4 sample images',
       );
     }
+    logger.info({ imageUrls, type, name });
 
     // eslint-disable-next-line max-len
     const fullWebhook = `${webhookUrl}?user_id=${userId}&webhook_secret=${LEAP_WEBHOOK_SECRET}&model_type=${type}`;

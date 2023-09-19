@@ -8,10 +8,10 @@ import hero from '/public/hero.png';
 import { Button } from '@/components/ui/button';
 import ExplainerSection from '@/components/ExplainerSection';
 import PricingSection from '@/components/PricingSection';
-import { getCurrentUser } from '@/lib/auth';
+import { useAuthContext } from '@/context/AuthProvider';
 
 export default function Index() {
-  const user = getCurrentUser();
+  const { user } = useAuthContext();
 
   if (user) {
     return redirect('/overview');

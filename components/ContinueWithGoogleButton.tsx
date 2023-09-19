@@ -2,15 +2,19 @@
 
 import { FaGoogle } from 'react-icons/fa';
 import { Button } from './ui/button';
-import { loginWithGoogle } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
+import { loginWithGoogle } from '@/utils/auth';
 
-export const ContinueWithGoogleButton = () => {
-  const router = useRouter();
-
+export const ContinueWithGoogleButton = ({ onLogin }: {
+  onLogin: () => Promise<void>;
+}) => {
   const handleGoogleLogin = async () => {
-    await loginWithGoogle();
-    router.push('/');
+    try {
+      await loginWithGoogle();
+      await onLogin();
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
   return (

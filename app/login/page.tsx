@@ -13,25 +13,43 @@ import {
 } from '@/components/ui/card';
 import { DividerHorizontalIcon } from '@radix-ui/react-icons';
 import { ContinueWithGoogleButton } from '@/components/ContinueWithGoogleButton';
-import { loginWithCredentials, signupWithCredentials } from '@/lib/auth';
+import { loginWithCredentials, signupWithCredentials } from '@/utils/auth';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
-    await signupWithCredentials({
-      email,
-      password,
-    });
+    try {
+      await signupWithCredentials({
+        email,
+        password,
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   };
 
   const handleCredentialLogin = async () => {
-    await loginWithCredentials({
-      email,
-      password,
-    });
+    try {
+      await loginWithCredentials({
+        email,
+        password,
+      });
+      await onLogin();
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  };
+
+
+  const onLogin = async () => {
+    const router = useRouter();
+    await router.push('/overview');
   };
 
 
@@ -74,7 +92,9 @@ export default function Login() {
               Sign Up
             </Button>
             <DividerHorizontalIcon />
-            <ContinueWithGoogleButton />
+            <ContinueWithGoogleButton
+              onLogin={onLogin}
+            />
             <Messages />
           </CardContent>
           <CardFooter>

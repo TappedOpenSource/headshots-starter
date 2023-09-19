@@ -21,10 +21,10 @@ import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { FaFemale, FaImages, FaMale, FaRainbow } from 'react-icons/fa';
 import * as z from 'zod';
-import * as api from '@/lib/api';
-import { uploadSampleImages } from '@/lib/storage';
-import { createSampleImage } from '@/lib/database';
-import { getCurrentUser } from '@/lib/auth';
+import * as api from '@/utils/api';
+import { uploadSampleImages } from '@/utils/storage';
+import { createSampleImages } from '@/utils/database';
+import { useAuthContext } from '@/context/AuthProvider';
 
 const formSchema = z.object({
   name: z
@@ -40,6 +40,7 @@ export default function TrainModelZone() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useAuthContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -123,7 +124,6 @@ export default function TrainModelZone() {
   const trainModel = useCallback(async () => {
     setIsLoading(true);
     try {
-      const user = getCurrentUser();
       if (user === null) throw new Error('User not found');
 
       // upload to storage
@@ -133,7 +133,7 @@ export default function TrainModelZone() {
       });
 
       // upload to database
-      await createSampleImage({
+      await createSampleImages({
         userId: user.uid,
         images: urls,
       });

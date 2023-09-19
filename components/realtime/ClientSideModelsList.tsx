@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { FaImages } from 'react-icons/fa';
 import ModelsTable from '../ModelsTable';
 import { AiModel } from '@/types/aiModel';
-import { getCurrentUser } from '@/lib/auth';
-import { getAiModelsByUserIdRealtime } from '@/lib/database';
+import { getAiModelsByUserIdRealtime } from '@/utils/database';
+import { useAuthContext } from '@/context/AuthProvider';
 
 type ClientSideModelsListProps = {
   serverModels: AiModel[] | [];
@@ -16,7 +16,7 @@ type ClientSideModelsListProps = {
 export default function ClientSideModelsList({
   serverModels,
 }: ClientSideModelsListProps) {
-  const user = getCurrentUser();
+  const { user } = useAuthContext();
   if (!user) {
     return (
       <></>

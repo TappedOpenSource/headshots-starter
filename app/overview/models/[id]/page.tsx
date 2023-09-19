@@ -1,19 +1,20 @@
 'use client';
 
+import type { Image } from '@/types/image';
+
 import Login from '@/app/login/page';
 import ClientSideModel from '@/components/realtime/ClientSideModel';
 import { Button } from '@/components/ui/button';
-import { getCurrentUser } from '@/lib/auth';
-import { getAiModelByUserId, getAvatarsByAiModelId } from '@/lib/database';
+import { getAiModelByUserId, getAvatarsByAiModelId } from '@/utils/database';
 import { AiModel } from '@/types/aiModel';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useAuthContext } from '@/context/AuthProvider';
 
 export default function Index({ params }: { params: { id: string } }) {
-  const user = getCurrentUser();
-
+  const { user } = useAuthContext();
   if (!user) {
     return <Login />;
   }

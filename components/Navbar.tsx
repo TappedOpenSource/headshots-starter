@@ -1,3 +1,4 @@
+'use client';
 import { AvatarIcon } from '@radix-ui/react-icons';
 import {
   DropdownMenu,
@@ -9,10 +10,10 @@ import {
 import Link from 'next/link';
 import { Button } from './ui/button';
 import React from 'react';
-import { getCurrentUser } from '@/lib/auth';
+import { useAuthContext } from '@/context/AuthProvider';
 
 export default function Navbar() {
-  const user = getCurrentUser();
+  const { user } = useAuthContext();
 
   return (
     <div className="flex w-full px-8 py-4 justify-between items-center border-b">

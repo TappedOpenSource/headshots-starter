@@ -1,12 +1,13 @@
 'use client';
 
+import type { Image } from '@/types/image';
 import { Icons } from '@/components/icons';
 import { useEffect, useState } from 'react';
 import { AspectRatio } from '../ui/aspect-ratio';
 import { Badge } from '../ui/badge';
 import { AiModel } from '@/types/aiModel';
-import { getAiModelsByUserIdRealtime } from '@/lib/database';
-import { getCurrentUser } from '@/lib/auth';
+import { getAiModelsByUserIdRealtime } from '@/utils/database';
+import { useAuthContext } from '@/context/AuthProvider';
 
 type ClientSideModelProps = {
   serverModel: AiModel;
@@ -17,7 +18,7 @@ export default function ClientSideModel({
   serverModel,
   serverImages,
 }: ClientSideModelProps) {
-  const user = getCurrentUser();
+  const { user } = useAuthContext();
   if (!user) {
     return (
       <></>
