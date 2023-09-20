@@ -12,6 +12,7 @@ export async function trainModel({
     type: string,
 }) {
   try {
+    console.log({ sampleImages, name, type });
     const func = httpsCallable<{
         imageUrls: string[];
         type: string;
@@ -23,7 +24,7 @@ export async function trainModel({
       name,
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }

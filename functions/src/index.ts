@@ -2,7 +2,6 @@
 import { Leap } from '@leap-ai/sdk';
 import { Resend } from 'resend';
 import { HttpsError, onCall, onRequest } from 'firebase-functions/v2/https';
-import * as logger from 'firebase-functions/logger';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getApp, getApps, initializeApp } from 'firebase-admin/app';
@@ -52,7 +51,7 @@ export const imageWebhook = onRequest(
     const modelId = urlObj.searchParams.get('model_id');
     const webhookSecret = urlObj.searchParams.get('webhook_secret');
 
-    logger.info({ userId, status, inferenceId, webhookSecret });
+    console.log({ userId, status, inferenceId, webhookSecret });
 
     if (!webhookSecret) {
       response.status(500).json(
@@ -83,7 +82,7 @@ export const imageWebhook = onRequest(
     }
 
     try {
-      logger.info({ images });
+      console.log({ images });
       await Promise.all(
         images.map(async (image: any) => {
           avatarsRef.doc(userId).collection('userAvatars').add({
@@ -94,7 +93,7 @@ export const imageWebhook = onRequest(
       );
       response.status(200).json('Success');
     } catch (e) {
-      logger.info(e);
+      console.log(e);
       response.status(500).json(
         'Something went wrong!',
       );
@@ -118,12 +117,12 @@ export const trainModel = onCall(
     });
 
     const userId = request.auth.uid;
-    logger.info({ userId });
+    console.log({ userId });
     const { imageUrls, type, name }: {
       imageUrls: string[];
       type: string;
       name: string;
-    } = request.data();
+    } = request.data;
 
     if (imageUrls?.length < 4) {
       throw new HttpsError(
@@ -131,13 +130,13 @@ export const trainModel = onCall(
         'Upload at least 4 sample images',
       );
     }
-    logger.info({ imageUrls, type, name });
+    console.log({ imageUrls, type, name });
 
     // eslint-disable-next-line max-len
     const fullWebhook = `${webhookUrl}?user_id=${userId}&webhook_secret=${LEAP_WEBHOOK_SECRET}&model_type=${type}`;
 
     const trainModelResponse = await leap.imageModels.trainModel({
-      name: userId,
+      name: name,
       subjectKeyword: '@subject',
       subjectType: 'person',
       webhookUrl: fullWebhook,
@@ -149,8 +148,8 @@ export const trainModel = onCall(
       id: string;
       imageSamples: string[];
     };
-    logger.info(trainModelResponse.request);
-    logger.info({ status, statusText, body });
+    console.log(trainModelResponse.request);
+    console.log({ status, statusText, body });
 
     // add model to DB
     await aiModelsRef
@@ -259,7 +258,7 @@ export const trainWebhook = onRequest(
               // eslint-disable-next-line max-len
               `${leapImageWebhookUrl}?user_id=${userId}&model_id=${id}&webhook_secret=${LEAP_WEBHOOK_SECRET.value()}`,
           });
-          logger.info({ status, statusText });
+          console.log({ status, statusText });
         }
       } else {
       // Send Email
@@ -285,7 +284,7 @@ export const trainWebhook = onRequest(
         'Success',
       );
     } catch (e) {
-      logger.info(e);
+      console.log(e);
       response.status(500).json(
         'Something went wrong!',
       );
