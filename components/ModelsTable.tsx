@@ -13,16 +13,34 @@ import { Badge } from '@/components/ui/badge';
 import { Icons } from './icons';
 import { useRouter } from 'next/navigation';
 import { AiModel } from '@/types/aiModel';
+import { Image } from '@/types/image';
+import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
+import { useEffect, useState } from 'react';
+import { getModelSamples } from '@/utils/database';
+import { useAuthContext } from '@/context/AuthProvider';
 
 type ModelsTableProps = {
-  models: AiModel[];
+  models: AiModel[]
 };
 
 export default function ModelsTable({ models }: ModelsTableProps) {
   const router = useRouter();
+  const { user } = useAuthContext();
+  if (!user) return null;
+
   const handleRedirect = (id: string) => {
     router.push(`/overview/models/${id}`);
   };
+
+  const [samples, setSamples] = useState<{ [modelId: string]: Image }>({});
+
+  useEffect(() => {
+    const fetchSamples = async () => {
+      const samples = await getModelSamples(user.uid);
+      setSamples(samples);
+    };
+    fetchSamples();
+  }, []);
 
   return (
     <div className="rounded-md border">
@@ -59,20 +77,20 @@ export default function ModelsTable({ models }: ModelsTableProps) {
                 </div>
               </TableCell>
               <TableCell>{model.type}</TableCell>
-              {/* <TableCell>
+              <TableCell>
                 <div className="flex gap-2 flex-shrink-0 items-center">
-                  {model.samples.slice(0, 3).map((sample) => (
-                    <Avatar key={sample.id}>
-                      <AvatarImage src={sample.uri} className="object-cover" />
+                  {Object.keys(samples).slice(0, 3).map((sampleIndex) => (
+                    <Avatar key={samples[sampleIndex].id}>
+                      <AvatarImage src={samples[sampleIndex].url} className="object-cover" />
                     </Avatar>
                   ))}
-                  {model.samples.length > 3 && (
+                  {Object.keys(samples).length > 3 && (
                     <Badge className="rounded-full h-10" variant={'outline'}>
-                      +{model.samples.length - 3}
+                      +{Object.keys(samples).length - 3}
                     </Badge>
                   )}
                 </div>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

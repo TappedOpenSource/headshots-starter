@@ -5,7 +5,7 @@ import type { Image } from '@/types/image';
 import Login from '@/app/login/page';
 import ClientSideModel from '@/components/realtime/ClientSideModel';
 import { Button } from '@/components/ui/button';
-import { getAiModelByUserId, getAvatarsByAiModelId } from '@/utils/database';
+import { getAiModelById, getAvatarsByAiModelId } from '@/utils/database';
 import { AiModel } from '@/types/aiModel';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -22,8 +22,9 @@ export default function Index({ params }: { params: { id: string } }) {
   const [model, setModel] = useState<AiModel | null>(null);
   const [images, setImages] = useState<Image[]>([]);
   useEffect(() => {
-    getAiModelByUserId(user.uid, params.id)
+    getAiModelById(user.uid, params.id)
       .then((model) => {
+        console.log({ model });
         if (!model) {
           redirect('/overview');
         }
@@ -34,7 +35,7 @@ export default function Index({ params }: { params: { id: string } }) {
   useEffect(() => {
     getAvatarsByAiModelId(user.uid, params.id)
       .then((images) => setImages(images));
-  });
+  }, []);
 
   return (
     <div id="train-model-container" className="w-full h-full px-20 py-10">

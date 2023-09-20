@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { AspectRatio } from '../ui/aspect-ratio';
 import { Badge } from '../ui/badge';
 import { AiModel } from '@/types/aiModel';
-import { getAiModelsByUserIdRealtime } from '@/utils/database';
+import { getAiModelByIdRealtime } from '@/utils/database';
 import { useAuthContext } from '@/context/AuthProvider';
 
 type ClientSideModelProps = {
@@ -27,8 +27,7 @@ export default function ClientSideModel({
 
   const [model, setModel] = useState<AiModel>(serverModel);
   useEffect(() => {
-    const unsubscribe = getAiModelsByUserIdRealtime(user.uid, (models) => {
-      const model = models[0];
+    const unsubscribe = getAiModelByIdRealtime(user.uid, serverModel.id, (model) => {
       if (model) {
         setModel(model);
       }

@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleSignUp = async () => {
     try {
@@ -48,7 +49,6 @@ export default function Login() {
 
 
   const onLogin = async () => {
-    const router = useRouter();
     await router.push('/overview');
   };
 

@@ -26,6 +26,7 @@ const leapImageWebhookUrl = 'https://imagewebhook-hwojyebtha-uc.a.run.app';
 
 const aiModelsRef = db.collection('aiModels');
 const avatarsRef = db.collection('avatars');
+const samplesRef = db.collection('samples');
 
 const prompts = [
   // eslint-disable-next-line max-len
@@ -53,7 +54,7 @@ export const imageWebhook = onRequest(
     const modelId = request.query.model_id as string;
     const webhookSecret = request.query.webhook_secret as string;
 
-    info({ userId, status, inferenceId, webhookSecret });
+    info({ userId, status, inferenceId });
 
     if (!webhookSecret) {
       response.status(500).json(
@@ -202,12 +203,28 @@ export const trainModel = onCall(
         type,
         status: 'training',
       });
-    // await supabase.from("samples").insert(
-    //   body.imageSamples.map((sample) => ({
-    //     modelId: id,
-    //     uri: sample,
-    //   }))
-    // );
+
+    await Promise.all(
+      imageUrls.map(async (imageUrl) => {
+        // get image from url
+        const imagesSnap = await samplesRef
+          .doc(userId)
+          .collection('userSamples')
+          .where('url', '==', imageUrl)
+          .get();
+
+        if (imagesSnap.empty) return;
+
+        // update image with modelId
+        await Promise.all(
+          imagesSnap.docs.map(async (doc) => {
+            await doc.ref.update({
+              modelId: body.id,
+            });
+          }),
+        );
+      }),
+    );
 
     return {
       success: true,
