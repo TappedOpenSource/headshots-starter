@@ -42,7 +42,7 @@ export default function ModelsTable({ models }: ModelsTableProps) {
               onClick={() => handleRedirect(model.id)}
               className="cursor-pointer h-16"
             >
-              <TableCell className="font-medium">{model.id}</TableCell>
+              <TableCell className="font-medium">{model.name}</TableCell>
               <TableCell>
                 <div>
                   <Badge

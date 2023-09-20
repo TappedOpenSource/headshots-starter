@@ -43,7 +43,7 @@ export default function ClientSideModel({
     <div id="train-model-container" className="w-full h-full">
       <div className="flex flex-col w-full mt-4 gap-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl">{model.id}</h1>
+          <h1 className="text-3xl">{model.name}</h1>
           <div>
             <Badge
               variant={model.status === 'ready' ? 'default' : 'secondary'}

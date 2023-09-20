@@ -19,6 +19,8 @@ const app = getApps().length <= 0 ?
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// const webhookUrlNew = '';
+// const imageWebhookUrlNew = '';
 const webhookUrl = 'https://trainwebhook-hwojyebtha-uc.a.run.app';
 const leapImageWebhookUrl = 'https://imagewebhook-hwojyebtha-uc.a.run.app';
 
@@ -44,13 +46,12 @@ export const imageWebhook = onRequest(
     const {
       id: inferenceId,
       state: status,
-      images,
-    } = request.body();
+      result,
+    } = request.body;
 
-    const urlObj = new URL(request.url);
-    const userId = urlObj.searchParams.get('user_id');
-    const modelId = urlObj.searchParams.get('model_id');
-    const webhookSecret = urlObj.searchParams.get('webhook_secret');
+    const userId = request.query.user_id as string;
+    const modelId = request.query.model_id as string;
+    const webhookSecret = request.query.webhook_secret as string;
 
     info({ userId, status, inferenceId, webhookSecret });
 
@@ -83,9 +84,9 @@ export const imageWebhook = onRequest(
     }
 
     try {
-      info({ images });
+      info({ images: result.images });
       await Promise.all(
-        images.map(async (image: any) => {
+        result.images.map(async (image: any) => {
           avatarsRef.doc(userId).collection('userAvatars').add({
             modelId: modelId,
             url: image.uri,
@@ -113,9 +114,9 @@ export const trainModel = onCall(
       );
     }
 
-    const leap = new Leap({
-      accessToken: LEAP_API_KEY.value(),
-    });
+    // const leap = new Leap({
+    //   accessToken: LEAP_API_KEY.value(),
+    // });
 
     const userId = request.auth.uid;
     info({ userId });
@@ -134,34 +135,72 @@ export const trainModel = onCall(
     info({ imageUrls, type, name });
 
     // eslint-disable-next-line max-len
-    const fullWebhook = `${webhookUrl}?user_id=${userId}&webhook_secret=${LEAP_WEBHOOK_SECRET}&model_type=${type}`;
-
-    const trainModelResponse = await leap.imageModels.trainModel({
-      name: name,
-      subjectKeyword: '@subject',
-      subjectType: 'person',
-      webhookUrl: fullWebhook,
-      imageSampleUrls: imageUrls,
+    const fullWebhook = `${webhookUrl}?user_id=${userId}&webhook_secret=${LEAP_WEBHOOK_SECRET.value()}&model_type=${type}`;
+    const formData = new FormData();
+    imageUrls.forEach((image) => {
+      formData.append('imageSampleUrls', image);
     });
 
-    const { status, statusText } = trainModelResponse;
-    const body = (await trainModelResponse.request.json()) as {
+    formData.append(
+      'webhookUrl',
+      fullWebhook,
+    );
+
+    formData.append('name', name);
+    formData.append('subjectType', type);
+    formData.append('subjectKeyword', '@subject');
+
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${LEAP_API_KEY.value()}`,
+      },
+      body: formData,
+    };
+    const resp = await fetch(
+      'https://api.tryleap.ai/api/v2/images/models/new',
+      options
+    );
+
+    const { status, statusText } = resp;
+    const body = (await resp.json()) as {
       id: string;
       imageSamples: string[];
     };
-    info(trainModelResponse.request);
+    // const trainModelResponse = await leap.imageModels.trainModel({
+    //   name: name,
+    //   subjectKeyword: '@subject',
+    //   subjectType: 'person',
+    //   webhookUrl: fullWebhook,
+    //   imageSampleUrls: imageUrls,
+    // });
+
+    // const { status, statusText } = trainModelResponse;
+    // const body = (await trainModelResponse.request.json()) as {
+    //   id: string;
+    //   imageSamples: string[];
+    // };
     info({ status, statusText, body });
+
+    if (body.id === undefined) {
+      throw new HttpsError(
+        'internal',
+        'the model id is undefined',
+      );
+    }
 
     // add model to DB
     await aiModelsRef
       .doc(userId)
       .collection('imageModels')
       .doc(body.id)
-      .update({
-        modelId: body.id,
+      .set({
+        id: body.id,
         user_id: userId,
         name,
         type,
+        status: 'training',
       });
     // await supabase.from("samples").insert(
     //   body.imageSamples.map((sample) => ({
@@ -180,11 +219,10 @@ export const trainWebhook = onRequest(
   async (request, response): Promise<void> => {
     const resend = new Resend(RESEND_API_KEY.value());
 
-    const { id, state: status } = await request.body();
-    const urlObj = new URL(request.url);
-    const userId = urlObj.searchParams.get('user_id');
-    const webhookSecret = urlObj.searchParams.get('webhook_secret');
-    const modelType = urlObj.searchParams.get('model_type');
+    const { id, state: status } = await request.body;
+    const userId = request.query.user_id as string;
+    const webhookSecret = request.query.webhook_secret as string;
+    const modelType = request.query.model_type as string;
 
     if (!webhookSecret) {
       response.status(500).json(
@@ -208,7 +246,6 @@ export const trainWebhook = onRequest(
     }
 
     const user = await auth.getUser(userId);
-
     if (!user) {
       response.status(401).json(
         'User not found!',
@@ -277,7 +314,7 @@ export const trainWebhook = onRequest(
           .collection('imageModels')
           .doc(id)
           .update({
-            status: 'failed',
+            status: 'errored',
           });
       }
 
