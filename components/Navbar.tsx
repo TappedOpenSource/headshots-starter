@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import React from 'react';
 import { useAuthContext } from '@/context/AuthProvider';
+import { logout } from '@/utils/auth';
 
 export default function Navbar() {
   const { user } = useAuthContext();
@@ -36,15 +37,13 @@ export default function Navbar() {
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <form action="/auth/sign-out" method="post">
-                <Button
-                  type="submit"
-                  className="w-full text-left"
-                  variant={'ghost'}
-                >
+              <Button
+                onClick={logout}
+                className="w-full text-left"
+                variant={'ghost'}
+              >
                   Log out
-                </Button>
-              </form>
+              </Button>
             </DropdownMenuContent>
           </DropdownMenu>
         )}
