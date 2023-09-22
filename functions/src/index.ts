@@ -19,10 +19,9 @@ const app = getApps().length <= 0 ?
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// const webhookUrlNew = '';
-// const imageWebhookUrlNew = '';
-const webhookUrl = 'https://trainwebhook-hwojyebtha-uc.a.run.app';
-const leapImageWebhookUrl = 'https://imagewebhook-hwojyebtha-uc.a.run.app';
+const projectId = app.options.projectId;
+const webhookUrl = `https://us-central1-${projectId}.cloudfunctions.net/trainwebhook`;
+const imageWebhookUrl = `https://us-central1-${projectId}.cloudfunctions.net/imagewebhook`;
 
 const aiModelsRef = db.collection('aiModels');
 const avatarsRef = db.collection('avatars');
@@ -311,7 +310,7 @@ export const trainWebhook = onRequest(
             promptStrength: 7.5,
             webhookUrl:
               // eslint-disable-next-line max-len
-              `${leapImageWebhookUrl}?user_id=${userId}&model_id=${id}&webhook_secret=${LEAP_WEBHOOK_SECRET.value()}`,
+              `${imageWebhookUrl}?user_id=${userId}&model_id=${id}&webhook_secret=${LEAP_WEBHOOK_SECRET.value()}`,
           });
           info({ status, statusText });
         }
