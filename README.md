@@ -29,7 +29,7 @@ To create your own Headshot AI app, follow these steps:
 1. Clone the repository:
 
 ```
-git clone https://github.com/leap-ai/headshots-starter.git
+git clone https://github.com/TappedOpenSource/headshots-starter.git
 ```
 
 2. Enter the `headshots-starter` directory:
@@ -40,52 +40,23 @@ cd headshots-starter
 
 3. Install dependencies:
 
-   For npm:
+```bash
+npm install
+```
 
-   ```bash
-   npm install
-   ```
+4. Create a [new Firebase project](https://firebase.google.com/) and enable firestore, storage, and serverless functions. This will require your project to be on the blaze plan:
 
-   For yarn:
-
-   ```bash
-   yarn
-   ```
-
-4. Create a [new Firebase project](https://database.new) and create the tables required for the app:
-
-   - Rename `.env.local.example` to `.env.local` and update the values for `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from [your Firebase project's API settings](https://app.supabase.com/project/_/settings/api)
-
-   **For this starter repo we disabled Row level permissions, you can enable them as needed for your own security, in the supasbase table settings**
-
-   ![Visualized Schemas](https://headshots-starter.vercel.app/visualized_schemas.png)
-
-   This code block defines the schema for three tables: `images`, `models`, and `samples`.
-
-   For any table column with `foreign_key`, make sure to link it while creating the column in Firebase.
-
-   [images]
-
-   - id (int8)
-   - modelId (int8) (foreign_key)\*
-   - uri (text)
-   - created_at (timestamptz)
-
-   [models] - (Make sure to enable realtime on this table)
-
-   - id (int8)
-   - name (text)
-   - type (text)
-   - created_at (timestamptz)
-   - user_id (uuid) (foreign_key)\*
-   - status (text)
-   - modelId (text)
-
-   [samples]
-
-   - id (int8)
-   - uri (text)
-   - modelId (int8) (foreign_key)\*
+   - Rename `.env.local.example` to `.env.local` and update the value for your firebase app (Project-Settings/General/Your-Apps)
+   
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=auth-domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=storage-bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=app-id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=measurment-id
+``` 
 
 5. Create a [Leap AI](https://tryleap.ai/) account
 
@@ -100,19 +71,18 @@ cd headshots-starter
 
    - Fill in `your-resend-api-key` with your Resend API Key
 
-7. Start the development server:
+7. Deploy Serverless Functions
 
-   For npm:
+```sh
+npm install -g firebase-tools
+firebase deploy --only functions
+```
 
-   ```bash
-   npm run dev
-   ```
+8. Start the development server:
 
-   For yarn:
-
-   ```bash
-   yarn dev
-   ```
+```bash
+npm run dev
+```
 
 8. Visit `http://localhost:3000` in your browser to see the running app.
 
@@ -157,8 +127,7 @@ We welcome collaboration and appreciate your contribution to Headshot AI. If you
 
 ## Resources and Support
 
-- Discord Community: [Leap Discord](https://discord.gg/NCAKTUayPK)
-- Help Email: help@tryleap.ai
+- Help Email: support@tryleap.ai
 
 ## License
 
